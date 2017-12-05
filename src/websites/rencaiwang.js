@@ -21,7 +21,8 @@ if(process.platform.indexOf("win") >= 0){
 
 
 function execute(){
-	collectCommpanys();
+	// collectCommpanys();
+	getOfferList();
 }
 //save companys 2 db
 function collectCommpanys(){
@@ -101,6 +102,11 @@ function wirteCompany2File(filepath,content,append){
 }
 function getOfferListByPage(page,cb){
 	postData.x = Math.random();
+
+	//jobtype1,trade工种筛选条件
+	postData.jobtype1 = "";
+	postData.trade = "";
+
 	postData.pageSize = 10;
 	postData.pageIndex = page;
 	var postDataStr=querystring.stringify(postData);  
