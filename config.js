@@ -17,6 +17,7 @@ var COMMON = {
 //jobtype1=,trade=,ALL
 var RCW = {
 	catch_list_time:10000,
+	catch_company_info_time:5000,
 	offerlist_file_save_path:"src/websites/人才网/all",
 	jobtype1:"19",
 	trade:"01",
