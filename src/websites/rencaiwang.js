@@ -2,27 +2,29 @@
 //http://www.hzhr.com/Web/data/web.aspx?method=GetRecruitList&x=0.5514678034878977&key=&jobtype1=19&jobtype2=&area=&updatetime=&trade=01&pay=&kind=&target=&pageSize=10&pageIndex=0
 //&sortOrder=re_modifytime+desc
 var server = require("../../curl");
+var config = require("../../config");
 var querystring=require('querystring'); 
 var fs = require('fs');
 //common
-const OFFER_LIST_FILE_NAME = "offerList_p";
+var OFFER_LIST_FILE_NAME;
 
 var path_offerList;
-var path_splitor;
-if(process.platform.indexOf("win") >= 0){
-	path_splitor = "\\";
-	path_offerList = "src\\websites\\人才网\\all";
-
-}else{
-	path_offerList = "src/websites/人才网/all";
-	path_splitor = "/";
-}
+var trade ;
+var jobtype1;
+var jiange_time;
 
 
 
 function execute(){
-	collectCommpanys();
-	// getOfferList();
+	//init config
+	path_offerList = config.RCW.offerlist_file_save_path;
+	trade = config.RCW.trade;
+	jobtype1 = config.RCW.jobtype1;
+	OFFER_LIST_FILE_NAME = config.RCW.offer_list_file_name;
+	jiange_time = config.RCW.catch_list_time;
+	
+	// collectCommpanys();
+	 getOfferList();
 }
 //save companys 2 db
 function collectCommpanys(){
@@ -33,7 +35,7 @@ function collectCommpanys(){
 	for(var i = 0; i < files.length;i++){
 		if(files[i].indexOf(OFFER_LIST_FILE_NAME) > -1){
 			console.log("saveing " + files[i]);
-			var fileData = fs.readFileSync(path_offerList + path_splitor+ files[i],"utf8");
+			var fileData = fs.readFileSync(path_offerList + "/"+ files[i],"utf8");
 			var pageObj = JSON.parse(fileData);
 			var offerList = pageObj.data;
 			for(var ii = 0;ii < offerList.length;ii++){
@@ -84,12 +86,12 @@ function getOfferList(){
 				return ;
 			}
 			var f = function(data,page){
-				wirteCompany2File(path_offerList + path_splitor +OFFER_LIST_FILE_NAME + page + ".txt",JSON.stringify(data),false);
+				wirteCompany2File(path_offerList + "/" +OFFER_LIST_FILE_NAME + page + ".txt",JSON.stringify(data),false);
 			}
 			getOfferListByPage(curPage,f);
 			curPage ++;
 		} 
-		taskList = setInterval(task,5000);
+		taskList = setInterval(task,jiange_time);
 	}
 	getOfferListByPage(curPage,getTotalPage);
 }
@@ -104,8 +106,8 @@ function getOfferListByPage(page,cb){
 	postData.x = Math.random();
 
 	//jobtype1,trade工种筛选条件
-	postData.jobtype1 = "";
-	postData.trade = "";
+	postData.jobtype1 = jobtype1;
+	postData.trade = trade;
 
 	postData.pageSize = 10;
 	postData.pageIndex = page;
