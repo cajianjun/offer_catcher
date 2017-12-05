@@ -21,8 +21,8 @@ if(process.platform.indexOf("win") >= 0){
 
 
 function execute(){
-	// collectCommpanys();
-	getOfferList();
+	collectCommpanys();
+	// getOfferList();
 }
 //save companys 2 db
 function collectCommpanys(){
@@ -84,7 +84,7 @@ function getOfferList(){
 				return ;
 			}
 			var f = function(data,page){
-				wirteCompany2File(path_offerList + OFFER_LIST_FILE_NAME + page + ".txt",JSON.stringify(data),false);
+				wirteCompany2File(path_offerList + path_splitor +OFFER_LIST_FILE_NAME + page + ".txt",JSON.stringify(data),false);
 			}
 			getOfferListByPage(curPage,f);
 			curPage ++;
@@ -133,8 +133,12 @@ function getOfferListByPage(page,cb){
 	}  
 	server.httpreq(options,function(data){
 		console.log("get offer list,at page=" + curPage);
-		var dataObj = JSON.parse(data);
-		cb(dataObj,page);
+		try{
+			var dataObj = JSON.parse(data);
+			cb(dataObj,page);	
+		}catch(e){
+			console.log("parse err" + data);
+		}
 	});
 }
 
