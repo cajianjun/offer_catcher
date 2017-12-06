@@ -8,10 +8,13 @@ var connection = mysql.createConnection({
   database: 'offer_center', 
 }); 
  
-
+connection.connect();
+function DISCONN(){
+  connection.end();
+}
 
 function INSERT(addSql,addSqlParams,cb){
-  connection.connect();
+  
    
   // var  addSql = 'INSERT INTO websites(Id,name,url,alexa,country) VALUES(0,?,?,?,?)';
   // var  addSqlParams = ['菜鸟工具', 'https://c.runoob.com','23453', 'CN'];
@@ -23,14 +26,13 @@ function INSERT(addSql,addSqlParams,cb){
           }        
          // console.log('--------------------------INSERT----------------------------');
          //console.log('INSERT ID:',result.insertId);        
-         console.log('INSERT ID:',result);        
+         // console.log('INSERT ID:',result);  
+         cb(result.insertId);      
          // console.log('-----------------------------------------------------------------\n\n');  
   });
-  connection.end();
 }
 
 function UPDATE(modSql,modSqlParams,cb){
-  connection.connect();
   
   // var modSql = 'UPDATE websites SET name = ?,url = ? WHERE Id = ?';
   // var modSqlParams = ['菜鸟移动站', 'https://m.runoob.com',6];
@@ -43,10 +45,10 @@ function UPDATE(modSql,modSqlParams,cb){
           }        
          // console.log('--------------------------INSERT----------------------------');
          //console.log('INSERT ID:',result.insertId);        
-         console.log('INSERT ID:',result);        
+         // console.log('INSERT ID:',result);  
+         cb();      
          // console.log('-----------------------------------------------------------------\n\n');  
   });
-  connection.end();
 }
 
 function SELECT(selSql){
@@ -62,10 +64,9 @@ function SELECT(selSql){
    
          // console.log('--------------------------SELECT----------------------------');
          console.log(result);
+         cb();
          // console.log('------------------------------------------------------------\n\n');  
   });
-   
-  connection.end();
 }
 
 function DELETE(delSql){
@@ -78,13 +79,13 @@ function DELETE(delSql){
           }        
    
          // console.log('--------------------------DELETE----------------------------');
-         console.log('DELETE affectedRows',result.affectedRows);
+         // console.log('DELETE affectedRows',result.affectedRows);
+         cb();
          // console.log('-----------------------------------------------------------------\n\n');  
   });
-  connection.end();
 }
 
-// exports.test = test;
+exports.DISCONN = DISCONN;
 exports.SELECT = SELECT;
 exports.DELETE = DELETE;
 exports.UPDATE = UPDATE;
